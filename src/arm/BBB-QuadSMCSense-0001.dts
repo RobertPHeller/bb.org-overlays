@@ -1,0 +1,54 @@
+/*
+ * Device tree overlay for QuadSMCSenseCape.
+ * Robert Heller D/B/A Deepwoods Software
+ * June 30, 2019
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/board/am335x-bbw-bbb-base.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/am33xx.h>
+
+/ {
+    compatible = "ti,beaglebone-black";
+
+    /* identification */
+    part-number = "BBB-QuadSMCSense";
+
+    /* version */
+    version = "0001";
+
+    exclusive-use =
+        "P8.3",     /* Motor2 */
+        "P8.4",     /* Points2 */
+        "P9.12",    /* Points1 */
+        "P9.15",    /* Motor3 */
+        "P9.23",    /* Motor4 */
+        "P9.25",    /* Points3 */
+        "P9.27",    /* Points4 */
+        "P9.42";    /* Motor1 */
+
+    fragment@0 {
+          target = <&am33xx_pinmux>;
+          __overlay__ {
+            /****************************************
+            *                       pinmux helper
+            ****************************************/
+            mux_helper_pins: pins {
+                    pinctrl-single,pins = <
+                        BONE_P9_42 (PIN_OUTPUT_PULLUP | MUX_MODE7) /* P9-42 (GPIO0_7) Motor1 */
+                        BONE_P8_03 (PIN_OUTPUT_PULLUP | MUX_MODE7) /* P8-3 (GPI1_6) Motor2 */
+                        BONE_P9_12 (PIN_INPUT_PULLUP  | MUX_MODE7) /* P9-12 (GPIO1_28) Points1 */
+                        BONE_P8_03 (PIN_INPUT_PULLUP  | MUX_MODE7) /* P8-4 (GPIO1_7) Points2 */
+                        
+                        BONE_P9_15 (PIN_OUTPUT_PULLUP | MUX_MODE7) /* P9-15 (GPIO1_16) Motor3 */
+                        BONE_P9_23 (PIN_OUTPUT_PULLUP | MUX_MODE7) /* P9-23 (GPI1_17) Motor4 */
+                        BONE_P9_25 (PIN_INPUT_PULLUP  | MUX_MODE7) /* P9-25 (GPIO3_21) Points3 */
+                        BONE_P9_27 (PIN_INPUT_PULLUP  | MUX_MODE7) /* P9-27 (GPIO3_27) Points4 */
+                    >;
+            };
+       };
+  };
+};
