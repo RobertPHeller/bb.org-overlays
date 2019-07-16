@@ -1,0 +1,48 @@
+/*
+ * Copyright (C) 2019 Robert Heller <heller@deepsoft.com
+ *
+ * Virtual *Pocket Beagle* cape for CAN1 on connector pins P2_25, P2_27 
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/am33xx.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	/* state the resources this cape uses */
+	exclusive-use =
+		/* the pin header uses */
+		"P2.25",	/* can1_rx */
+		"P2.27",	/* can1_tx */
+		/* the hardware ip uses */
+		"dcan1";
+
+	/*
+	 * Free up the pins used by the cape from the pinmux helpers.
+	 */
+	fragment@0 {
+		target = <&ocp>;
+		__overlay__ {
+                        P2_25_pinmux { status = "disabled"; };  /* CAN1_RX */
+                        P2_27_pinmux { status = "disabled"; };  /* CAN1_TX */
+		};
+	};
+
+	fragment@1 {
+		target = <&dcan1>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <
+                                &P2_25_can_pin
+                                &P2_27_can_pin        
+                        >;
+		};
+	};
+};
